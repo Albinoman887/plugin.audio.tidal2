@@ -1379,9 +1379,21 @@ class TrackUrlItem(tidal.TrackUrl, HasListItem):
             li.addStreamInfo('audio', { 'codec': 'flac', 'language': 'en', 'channels': 2 })
         self.url = 'http://localhost:%s/manifest.%s?track_id=%s&quality=%s' % (settings.fanart_server_port, 'm3u8' if use_hls else 'mpd', self.trackId, self._requested_quality)
         li.setMimeType('application/vnd.apple.mpegurl' if use_hls else 'application/dash+xml')
-        li.setProperty('inputstream' if KODI_VERSION >= (19, 0) else 'inputstreamaddon', 'inputstream.ffmpegdirect')
+
+        li.setProperty('inputstream', 'inputstream.ffmpegdirect')
+        # li.setProperty('inputstream' if KODI_VERSION >= (19, 0) else 'inputstreamaddon', 'inputstream.ffmpegdirect')
         li.setProperty('inputstream.ffmpegdirect.open_mode', 'ffmpeg')
-        # li.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'true')
+        li.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'false')
+        li.setProperty('inputstream.ffmpegdirect.stream_mode', 'timeshift')
+        # li.setProperty('inputstream.ffmpegdirect.stream_mode', 'catchup')
+        li.setProperty('inputstream.ffmpegdirect.playback_as_live', 'false')
+        li.setProperty('inputstream.ffmpegdirect.programme_start_time', '1')
+        li.setProperty('inputstream.ffmpegdirect.programme_end_time', '10')
+        li.setProperty('inputstream.ffmpegdirect.catchup_buffer_start_time', '2')
+        li.setProperty('inputstream.ffmpegdirect.catchup_buffer_end_time', '9')
+        li.setProperty('inputstream.ffmpegdirect.catchup_buffer_offset', '5')
+        li.setProperty('inputstream.ffmpegdirect.catchup_terminates', 'true')  
+        
         li.setProperty('inputstream.ffmpegdirect.manifest_type', 'hls' if use_hls else 'mpd')
         xbmcgui.Window(10000).setProperty('tidal2.%s' % self.trackId, quote_plus(self.manifest))
 
@@ -1444,9 +1456,9 @@ class BroadcastUrlItem(tidal.BroadcastUrl, HasListItem):
 
         li.setProperty('inputstream' if KODI_VERSION >= (19, 0) else 'inputstreamaddon', 'inputstream.ffmpegdirect')
         li.setProperty('inputstream.ffmpegdirect.open_mode', 'ffmpeg')            # curl or ffmpeg
-        li.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'true')
-        li.setProperty('inputstream.ffmpegdirect.playback_as_live', 'true')
-        # li.setProperty('inputstream.ffmpegdirect.stream_mode', 'timeshift')
+        li.setProperty('inputstream.ffmpegdirect.is_realtime_stream', 'false')
+        li.setProperty('inputstream.ffmpegdirect.playback_as_live', 'false')
+        li.setProperty('inputstream.ffmpegdirect.stream_mode', 'timeshift')
         if KODI_VERSION >= (20, 0):
             li.getVideoInfoTag().addAudioStream(xbmc.AudioStreamDetail(channels=2, codec='aac', language='en'))
         else:
